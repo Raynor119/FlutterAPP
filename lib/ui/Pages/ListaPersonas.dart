@@ -15,6 +15,9 @@ class ListaPersonas extends StatelessWidget {
         title: Text("Lista de Personas"),
         titleTextStyle: TextStyle(
             color: _darktheme ? Colors.white : Colors.white, fontSize: 22),
+        iconTheme: IconThemeData(
+          color: _darktheme ? Colors.white : Colors.white, // Cambia el color de la flecha según el tema
+        ),
       ),
       body: Page(),
     );

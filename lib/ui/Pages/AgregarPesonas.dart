@@ -19,6 +19,9 @@ class AgregarPersonas extends StatelessWidget {
         title: Text("Agregar Personas"),
         titleTextStyle: TextStyle(
             color: _darktheme ? Colors.white : Colors.white, fontSize: 22),
+        iconTheme: IconThemeData(
+          color: _darktheme ? Colors.white : Colors.white, // Cambia el color de la flecha según el tema
+        ),
       ),
       body: Page(),
     );
