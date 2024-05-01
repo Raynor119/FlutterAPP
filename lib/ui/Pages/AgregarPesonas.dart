@@ -7,6 +7,7 @@ import 'package:votacion/ui/Componentes/EditText.dart';
 late EditTextT nombret;
 late EditTextT apellidot;
 late EditTextNumberT telefonot;
+late EditTextFecha FechaN;
 
 class AgregarPersonas extends StatelessWidget {
   const AgregarPersonas({Key? key}) : super(key: key);
@@ -37,13 +38,15 @@ class _Page extends State<Page>{
   @override
   void initState() {
     super.initState();
-    nombret = EditTextT();
-    apellidot = EditTextT();
-    telefonot = EditTextNumberT();
+    nombret = new EditTextT();
+    apellidot = new EditTextT();
+    telefonot = new EditTextNumberT();
+    FechaN = new EditTextFecha("dd/MM/YYYYY");
 
     FocusNode focusNodenombret = FocusNode();
     FocusNode focusNodeapellidot = FocusNode();
     FocusNode focusNodetelefonot = FocusNode();
+    FocusNode focusNodeFechaN = FocusNode();
 
     nombret.setLabelhit("Nombre");
     nombret.setFocus(focusNodenombret);
@@ -55,6 +58,11 @@ class _Page extends State<Page>{
 
     telefonot.setLabelhit("Telefono");
     telefonot.setFocus(focusNodetelefonot);
+    telefonot.setFocusNext(focusNodeFechaN);
+
+    FechaN.setLabelhit("Fecha de Nacimiento");
+    FechaN.setFocus(focusNodeFechaN);
+    //FechaN.setText("dd/MM/YYYYY");
   }
   @override
   Widget build(BuildContext context) {
@@ -83,6 +91,13 @@ class _Page extends State<Page>{
           Container(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: telefonot,
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: FechaN,
           ),
         ],
       ),

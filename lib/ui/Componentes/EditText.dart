@@ -382,3 +382,148 @@ class _EditTextNumberT extends State<EditTextNumberT> {
     );
   }
 }
+
+
+
+class EditTextFecha extends StatefulWidget {
+  String textoFormato;
+  EditTextFecha(this.textoFormato,{Key? key}) : super(key: key);
+
+  void setText(String text){
+    dato.setText(text);
+  }
+  void setError(bool veri,String error){
+    dato.setError(veri,error);
+  }
+  bool getError(){
+    return dato.getError();
+  }
+  String getText(){
+    return dato.getText();
+  }
+  void setLabelhit(String label){
+    dato.setLabelhit(label);
+  }
+  void setFocus(FocusNode _focus){
+    dato.setFocus(_focus);
+  }
+  void setFocusNext(FocusNode _focus){
+    dato.setFocusNext(_focus);
+  }
+  _EditTextFecha dato=new _EditTextFecha();
+  @override
+  _EditTextFecha createState() => dato;
+}
+
+class _EditTextFecha extends State<EditTextFecha> {
+  TextEditingController _controller = TextEditingController();
+  FocusNode _focusNode = FocusNode();
+  FocusNode _focusNodeSet = FocusNode();
+  var _isError = false;
+  var _ErrorText = "";
+  var laberhit = "";
+  String textofecha="";
+  void setText(String dato) {
+    setState(() {
+      _controller.text = dato;
+    });
+  }
+
+  String getText() {
+    return _controller.text.toString();
+  }
+
+  void setError(bool dato, String error) {
+    setState(() {
+      _isError = dato;
+      _ErrorText = error;
+    });
+  }
+  void setFocus(FocusNode _focus){
+    _focusNode=_focus;
+  }
+  void setFocusNext(FocusNode _focus){
+    _focusNodeSet=_focus;
+  }
+
+  bool getError() {
+    return _isError;
+  }
+
+  void setLabelhit(String label) {
+    laberhit = label;
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    textofecha=widget.textoFormato;
+    _controller.text=textofecha;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    bool _darktheme = Theme.of(context).brightness == Brightness.dark;
+    return SizedBox(
+      child: TextField(
+        controller: _controller,
+        focusNode: _focusNode,
+        onChanged: (text) {
+          setState(() {
+            _controller.text=textofecha;
+          }); // Para redibujar el widget cuando cambia el texto
+        },
+        onSubmitted: (value) {
+          FocusScope.of(context).requestFocus(_focusNodeSet);
+        },
+         // Deshabilita la edición del TextField
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: _darktheme ? Colores.coloarPrimarioDark : Colores.coloarPrimario,
+            ), // Define el color blanco cuando está enfocado
+          ),
+          labelText: laberhit,
+          errorText: _isError ? _ErrorText : null,
+          suffixIcon: IconButton(
+            icon: Icon(Icons.calendar_today),
+            onPressed: () {
+              showDatePickerDialog(context);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+  Future<void> showDatePickerDialog(BuildContext context) async {
+    bool _darktheme = Theme.of(context).brightness == Brightness.dark;
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900), // Fecha mínima
+      lastDate: DateTime.now(), // Fecha máxima, hoy
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData(
+            useMaterial3: true,
+            brightness: _darktheme ? Brightness.dark : Brightness.dark,
+            scaffoldBackgroundColor: _darktheme ? Color(0xFF000000) : Color(0xFFFFFFFF),
+            colorSchemeSeed:  _darktheme ?  Colores.blueThemeDark:  Colores.blueTheme,
+            backgroundColor: _darktheme ? Color(0xFF000000) : Color(0xFFFFFFFF),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (selectedDate != null) {
+      // Actualiza el texto con la fecha seleccionada
+      setState(() {
+        textofecha = "${selectedDate.day.toString().padLeft(2, '0')}/${selectedDate.month.toString().padLeft(2, '0')}/${selectedDate.year}";
+        _controller.text = textofecha;
+      });
+    }
+  }
+
+}
