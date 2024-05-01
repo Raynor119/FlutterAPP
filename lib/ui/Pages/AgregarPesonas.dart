@@ -1,6 +1,8 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:votacion/infraestruture/ViewModel/ListaPersonaViewModel.dart';
 import 'package:votacion/ui/Componentes/Colores.dart' as Colores;
 import 'package:votacion/ui/Componentes/EditText.dart';
 
@@ -8,6 +10,7 @@ late EditTextT nombret;
 late EditTextT apellidot;
 late EditTextNumberT telefonot;
 late EditTextFecha FechaN;
+
 
 class AgregarPersonas extends StatelessWidget {
   const AgregarPersonas({Key? key}) : super(key: key);
@@ -41,7 +44,7 @@ class _Page extends State<Page>{
     nombret = new EditTextT();
     apellidot = new EditTextT();
     telefonot = new EditTextNumberT();
-    FechaN = new EditTextFecha("dd/MM/YYYYY");
+    FechaN = new EditTextFecha("dd/MM/YYYY");
 
     FocusNode focusNodenombret = FocusNode();
     FocusNode focusNodeapellidot = FocusNode();
@@ -123,9 +126,34 @@ class _AG_Persona extends State<AG_Persona> {
   @override
   Widget build(BuildContext context) {
     bool _darktheme = AdaptiveTheme.of(context).mode == AdaptiveThemeMode.dark;
+    final personViewModel = Provider.of<PersonViewModel>(context);
     return ElevatedButton(
       onPressed: () {
-        print("Guardar");
+        if(nombret.getText().isEmpty){
+          nombret.setError(true, "Digite el nombre");
+        }
+        if(apellidot.getText().isEmpty){
+          apellidot.setError(true, "Digite el apellido");
+        }
+        if(telefonot.getText().isEmpty){
+          telefonot.setError(true, "Digite el telefono");
+        }
+        if(FechaN.getText()=="dd/MM/YYYY"){
+          FechaN.setError(true, "Digite la fecha de nacimiento");
+        }
+        if((!nombret.getError()) && (!apellidot.getError()) && (!telefonot.getError()) && (!FechaN.getError())){
+          personViewModel.addpersona(
+            nombret.getText(),
+            apellidot.getText(),
+            telefonot.getText(),
+            formatearFecha(FechaN.getText()),
+          );
+          nombret.setText("");
+          apellidot.setText("");
+          telefonot.setText("");
+          FechaN.setText("dd/MM/YYYY");
+          print("-----------------------------------------Guardado-----------------------------------");
+        }
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: _darktheme
@@ -150,5 +178,12 @@ class _AG_Persona extends State<AG_Persona> {
         ),
       ),
     );
+  }
+  String formatearFecha(String fecha) {
+    List<String> partes = fecha.split('/');
+    String dia = partes[0];
+    String mes = partes[1];
+    String anio = partes[2];
+    return '$anio-$mes-$dia';
   }
 }

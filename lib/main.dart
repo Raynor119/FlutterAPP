@@ -1,6 +1,8 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:votacion/infraestruture/ViewModel/ListaPersonaViewModel.dart';
 import 'package:votacion/ui/Componentes/EditText.dart';
 import 'package:votacion/ui/Componentes/Colores.dart' as Colores;
 import 'package:votacion/ui/Pages/Inicio.dart';
@@ -9,11 +11,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => PersonViewModel()),
+        // Agrega aquí más providers según tus necesidades
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 late EditTextT textUsuari;
 late EditTextPasswd textContra;
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

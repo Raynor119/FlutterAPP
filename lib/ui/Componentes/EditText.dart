@@ -464,6 +464,21 @@ class _EditTextFecha extends State<EditTextFecha> {
     super.initState();
     textofecha=widget.textoFormato;
     _controller.text=textofecha;
+    _controller.addListener(_onTextChanged);
+  }
+  @override
+  void dispose() {
+    // Limpia el controlador cuando el widget se destruye.
+    _controller.dispose();
+    super.dispose();
+  }
+  // Función para manejar los cambios en el texto.
+  void _onTextChanged() {
+    // Verifica si la longitud del texto es mayor que 12.
+
+    setError(false, "");
+
+    //setError(false, "");
   }
 
   @override
