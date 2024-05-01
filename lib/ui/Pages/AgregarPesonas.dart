@@ -99,7 +99,55 @@ class _Page extends State<Page>{
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: FechaN,
           ),
+          SizedBox(
+            height: 50,
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: AG_Persona(),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+
+class AG_Persona extends StatefulWidget {
+  const AG_Persona({Key? key}) : super(key: key);
+
+  @override
+  _AG_Persona createState() => _AG_Persona();
+}
+class _AG_Persona extends State<AG_Persona> {
+  @override
+  Widget build(BuildContext context) {
+    bool _darktheme = AdaptiveTheme.of(context).mode == AdaptiveThemeMode.dark;
+    return ElevatedButton(
+      onPressed: () {
+        print("Guardar");
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: _darktheme
+            ? Colores.coloarPrimarioDark
+            : Colores.coloarPrimario, // Color de fondo del botón
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0), // Bordes redondeados
+          side: BorderSide(
+            color: _darktheme ? Colores.coloarPrimarioDark : Colores.coloarPrimario,
+          ), // Borde del mismo color que el fondo
+        ),
+      ),
+      child: const Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 16.0),
+        child: const Text(
+          'Agregar Persona',
+          style: const TextStyle(
+            fontSize: 16.0, // Tamaño de la fuente
+            fontWeight: FontWeight.bold, // Negrita
+            color: Colors.white, // Color del texto
+          ),
+        ),
       ),
     );
   }

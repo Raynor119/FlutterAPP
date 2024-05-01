@@ -85,7 +85,11 @@ class _TextUsuarioState extends State<EditTextT> {
     if(getText()=="1"){
 
     }else{
-      setError(false, "");
+      if(getText().length>25){
+        setError(true, "Error no puede superar los 25 caracteres");
+      }else{
+        setError(false, "");
+      }
     }
     //setError(false, "");
   }
