@@ -6,6 +6,7 @@ import 'package:votacion/ui/Componentes/Colores.dart' as Colores;
 import 'package:votacion/ui/Pages/Inicio.dart';
 import 'package:votacion/ui/Pages/Menu.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(const MyApp());
@@ -40,6 +41,15 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'App Votacion',
+            localizationsDelegates: [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: [
+              Locale('en'),
+              Locale('es'),
+            ],
             theme: theme,
             darkTheme: darkTheme,
             home: SplashScreen(),

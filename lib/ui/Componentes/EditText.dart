@@ -350,6 +350,7 @@ class _EditTextNumberT extends State<EditTextNumberT> {
       child: TextField(
         controller: _controller,
         focusNode: _focusNode,
+        keyboardType: TextInputType.number,
         inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
         onChanged: (text) {
           setState(() {
@@ -498,18 +499,23 @@ class _EditTextFecha extends State<EditTextFecha> {
   }
   Future<void> showDatePickerDialog(BuildContext context) async {
     bool _darktheme = Theme.of(context).brightness == Brightness.dark;
+
+    final Locale myLocale = Localizations.localeOf(context); // Obtener el idioma local
+
     final DateTime? selectedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(1900), // Fecha mínima
       lastDate: DateTime.now(), // Fecha máxima, hoy
+      locale: myLocale, // Establecer el idioma local
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData(
             useMaterial3: true,
             brightness: _darktheme ? Brightness.dark : Brightness.dark,
             scaffoldBackgroundColor: _darktheme ? Color(0xFF000000) : Color(0xFFFFFFFF),
-            colorSchemeSeed:  _darktheme ?  Colores.blueThemeDark:  Colores.blueTheme,
+            // Usar el esquema de colores apropiado para el tema oscuro o claro
+            colorSchemeSeed: _darktheme ? Colores.blueThemeDark : Colores.blueTheme,
             backgroundColor: _darktheme ? Color(0xFF000000) : Color(0xFFFFFFFF),
           ),
           child: child!,
