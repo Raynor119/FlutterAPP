@@ -62,4 +62,13 @@ class DatabaseSQLt {
       );
     });
   }
+
+  Future<void> deletePersona(int id) async {
+    final Database db = await database;
+    await db.delete(
+      'Personas',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 }

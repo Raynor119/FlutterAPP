@@ -22,4 +22,12 @@ class PersonViewModel extends ChangeNotifier {
   }
 
 
+  void deletePersona(int index,int id) {
+    DatabaseSQLt _databaseSQLt = DatabaseSQLt();
+    _databaseSQLt.deletePersona(id);
+    getPersonas();
+    notifyListeners(); // Notificar a los escuchadores sobre el cambio
+  }
+
+
 }

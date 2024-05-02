@@ -1,14 +1,23 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:votacion/domain/DatosCapsulados/listaApp.dart';
+import 'package:votacion/infraestruture/ViewModel/ListaPersonaViewModel.dart';
 import 'package:votacion/ui/Componentes/Colores.dart' as Colores;
 
 
 class ListaPersonas extends StatelessWidget {
-  const ListaPersonas({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     bool _darktheme = AdaptiveTheme.of(context).mode == AdaptiveThemeMode.dark;
+
+    // Obtén una instancia de PersonViewModel desde el Provider
+    final PersonViewModel _personViewModel = Provider.of<PersonViewModel>(context, listen: false);
+
+    // Inicializa la lista de personas
+    _personViewModel.getPersonas();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: _darktheme ? Colores.coloarPrimarioDark : Colores.coloarPrimario,
@@ -23,6 +32,8 @@ class ListaPersonas extends StatelessWidget {
     );
   }
 }
+
+
 class Page extends StatefulWidget {
   Page({Key? key}) : super(key: key);
   @override
@@ -35,12 +46,22 @@ class _Page extends State<Page>{
     bool _darktheme = AdaptiveTheme.of(context).mode == AdaptiveThemeMode.dark;
     return Center(
       child: Container(
-        color: _darktheme ? Colores.negrototal : Colores.fondomodoblanco,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            MyCard(),
-          ],
+        child: Consumer<PersonViewModel>(
+          builder: (context, viewModel,child) {
+            return ListView.builder(
+              itemCount: viewModel.personas.length,
+              itemBuilder: (context, index) {
+                final person = viewModel.personas;
+                return MyCard(
+                  index: index,
+                  id: person[index].Id,
+                  nombre: person[index].Nombre,
+                  apellido: person[index].Apellido,
+                  telefono: person[index].Telefono,
+                  fecha: person[index].FechaN,
+                );
+              },);
+          },
         ),
       ),
     );
@@ -48,17 +69,56 @@ class _Page extends State<Page>{
 }
 
 
-class MyCard extends StatelessWidget {
+class MyCard extends StatefulWidget {
+  final int index;
+  final int id;
+  final String nombre;
+  final String apellido;
+  final String telefono;
+  final String fecha;
+
+  const MyCard({
+    Key? key,
+    required this.index,
+    required this.id,
+    required this.nombre,
+    required this.apellido,
+    required this.telefono,
+    required this.fecha,
+  }) : super(key: key);
+  @override
+  _MyCard createState() => _MyCard();
+}
+
+class _MyCard extends State<MyCard>{
+  late int index;
+  late int id;
+  late String nombre;
+  late String apellido;
+  late String telefono;
+  late String fecha;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    index=widget.index;
+    id=widget.id;
+    nombre=widget.nombre;
+    apellido=widget.apellido;
+    telefono=widget.telefono;
+    fecha=widget.fecha;
+  }
+
   @override
   Widget build(BuildContext context) {
     bool _darktheme = AdaptiveTheme.of(context).mode == AdaptiveThemeMode.dark;
     return Container(
       width: double.infinity, // Ancho máximo
-      padding: EdgeInsets.symmetric(vertical: 5,horizontal: 5), // Márgenes a los lados
+      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 5), // Márgenes a los lados
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          child:  Card(
+          child: Card(
             color: _darktheme ? Colores.colorcard_dark : Colores.colorcard, // Fondo blanco
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0), // Bordes circulares
@@ -71,36 +131,41 @@ class MyCard extends StatelessWidget {
               color: _darktheme ? Colores.colorcard_dark : Colores.colorcard,
               child: InkWell(
                 onTap: () {
-                  print('Hola');
+                  // Elimina el elemento al tocar el card
+                  // Maneja el evento de toque
+                  setState(() {
+                    Provider.of<PersonViewModel>(context, listen: false).deletePersona(index,id);
+                  });
+                  print("hola");
                 },
                 child: Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Row(
                     children: [
                       Icon(Icons.person,
-                          color:  _darktheme ? Colores.coloarPrimarioDark : Colores.coloarPrimario,
+                          color: _darktheme ? Colores.coloarPrimarioDark : Colores.coloarPrimario,
                           size: 75.0), // Icono de persona
                       SizedBox(width: 16.0),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Nombre: Juan',
+                            'Nombre: $nombre',
                             style: TextStyle(fontSize: 16.0),
                           ),
                           SizedBox(height: 8.0),
                           Text(
-                            'Apellidos: Pérez',
+                            'Apellidos: $apellido',
                             style: TextStyle(fontSize: 16.0),
                           ),
                           SizedBox(height: 8.0),
                           Text(
-                            'Teléfono: 123456789',
+                            'Teléfono: $telefono',
                             style: TextStyle(fontSize: 16.0),
                           ),
                           SizedBox(height: 8.0),
                           Text(
-                            'Fecha: 01/05/2024',
+                            'Fecha: $fecha',
                             style: TextStyle(fontSize: 16.0),
                           ),
                         ],

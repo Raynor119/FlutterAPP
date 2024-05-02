@@ -148,10 +148,10 @@ class _AG_Persona extends State<AG_Persona> {
             telefonot.getText(),
             formatearFecha(FechaN.getText()),
           );
-          nombret.setText("");
-          apellidot.setText("");
-          telefonot.setText("");
-          FechaN.setText("dd/MM/YYYY");
+          //nombret.setText("");
+          //apellidot.setText("");
+          //telefonot.setText("");
+          //FechaN.setText("dd/MM/YYYY");
           print("-----------------------------------------Guardado-----------------------------------");
         }
       },
