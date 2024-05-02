@@ -35,11 +35,13 @@ class Page extends StatefulWidget {
 
 class _Page extends State<Page> {
   late List<ListaDatos> _personas;
+  late ScrollController _scrollController; // Agregar controlador de desplazamiento
 
   @override
   void initState() {
     super.initState();
     _personas = [];
+    _scrollController = ScrollController(); // Inicializar el controlador
   }
 
   @override
@@ -64,6 +66,7 @@ class _Page extends State<Page> {
                 color: _darktheme ? Colores.negrototal : Colores.fondomodoblanco,
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
                 child: ListView.builder(
+                  controller: _scrollController, // Asignar el controlador
                   itemCount: _personas.length,
                   itemBuilder: (context, index) {
                     final person = _personas[index];
@@ -86,6 +89,7 @@ class _Page extends State<Page> {
     );
   }
 }
+
 class MyCard extends StatefulWidget {
   final Key key;
   final int index;

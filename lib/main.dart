@@ -8,9 +8,17 @@ import 'package:votacion/ui/Componentes/Colores.dart' as Colores;
 import 'package:votacion/ui/Pages/Inicio.dart';
 import 'package:votacion/ui/Pages/Menu.dart';
 import 'package:flutter/services.dart';
+import 'dart:io' show Platform;
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
+
+  if (Platform.isLinux) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
   runApp(
     MultiProvider(
       providers: [
