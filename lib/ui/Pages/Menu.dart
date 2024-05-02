@@ -1,6 +1,8 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:votacion/domain/DatosCapsulados/listaApp.dart';
+import 'package:votacion/infraestruture/ViewModel/ListaPersonaViewModel.dart';
 import 'package:votacion/ui/Componentes/Colores.dart' as Colores;
 import 'package:votacion/ui/Pages/AgregarPesonas.dart';
 import 'package:votacion/ui/Pages/ListaPersonas.dart';
@@ -76,12 +78,20 @@ class BL_Persona extends StatefulWidget {
   _BL_Persona createState() => _BL_Persona();
 }
 class _BL_Persona extends State<BL_Persona> {
+  final PersonViewModel _personViewModel = PersonViewModel(); // Instancia tu ViewModel
+
   @override
   Widget build(BuildContext context) {
     bool _darktheme = AdaptiveTheme.of(context).mode == AdaptiveThemeMode.dark;
     return ElevatedButton(
-      onPressed: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ListaPersonas()));
+      onPressed: () async {
+        // Llama al método fetchPersonas para obtener la lista de personas
+        await _personViewModel.fetchPersonas();
+        // Imprime la lista de personas
+        List<ListaDatos> person=_personViewModel.personas;
+        for (var persona in person) {
+          print('Nombre: ${persona.Nombre}, Apellido: ${persona.Apellido}');
+        }
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: _darktheme

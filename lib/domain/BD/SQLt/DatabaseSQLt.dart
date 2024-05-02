@@ -4,26 +4,37 @@ import 'package:path/path.dart';
 import 'dart:async';
 import 'dart:io';
 
+import '../../DatosCapsulados/listaApp.dart';
+
 class DatabaseSQLt {
   static late Database _database;
-  Future<Database> get database async {
-    if (_database != null) return _database;
-    _database = await _initDatabase();
-    return _database;
+  static bool _initialized = false;
+
+  Future<void> initialize() async {
+    if (!_initialized) {
+      await _initDatabase();
+      _initialized = true;
+    }
   }
-  Future<Database> _initDatabase() async {
+
+  Future<void> _initDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, 'database.db');
-    return await openDatabase(path, version: 1, onCreate: _createDatabase);
+    _database = await openDatabase(path, version: 1, onCreate: _createDatabase);
   }
+
+  Future<Database> get database async {
+    await initialize(); // Asegúrate de que la base de datos esté inicializada antes de acceder a ella
+    return _database;
+  }
+
   Future<void> _createDatabase(Database db, int version) async {
     await db.execute('''
       CREATE TABLE Personas(id INTEGER PRIMARY KEY,nombre TEXT,apellido TEXT,telefono TEXT,FechaN TEXT)
     ''');
   }
 
-
-  Future<void> insertPersonas(String nombre,String apellido,String telefono,String fechan) async {
+  Future<void> insertPersonas(String nombre, String apellido, String telefono, String fechan) async {
     final Database db = await database;
     await db.insert(
       'Personas',
@@ -37,12 +48,17 @@ class DatabaseSQLt {
     );
   }
 
-
-  Future<List<String>> getNombres() async {
+  Future<List<ListaDatos>> getPersonas() async {
     final Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query('Personas');
+
     return List.generate(maps.length, (i) {
-      return maps[i]['nombre'] as String;
+      return ListaDatos(
+        maps[i]['nombre'],
+        maps[i]['apellido'],
+        maps[i]['telefono'],
+        maps[i]['FechaN'],
+      );
     });
   }
 }
