@@ -39,11 +39,11 @@ class PersonViewModel extends ChangeNotifier {
     }
   }
 
-  void deletePersona(int index, int id) {
+  Future<void> deletePersona(int id) async {
     try {
       DatabaseSQLt _databaseSQLt = DatabaseSQLt();
-      _databaseSQLt.deletePersona(id);
-      getPersonas(); // Actualiza la lista después de eliminar una persona
+      await _databaseSQLt.deletePersona(id);
+      await getPersonas(); // Espera a que se complete la eliminación antes de actualizar la lista
     } catch (e) {
       _updateState(PersonState.error, e.toString());
     }

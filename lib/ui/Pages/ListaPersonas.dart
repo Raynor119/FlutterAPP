@@ -11,11 +11,6 @@ class ListaPersonas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool _darktheme = AdaptiveTheme.of(context).mode == AdaptiveThemeMode.dark;
-    // Obtén una instancia de PersonViewModel desde el Provider
-    final PersonViewModel _personViewModel = Provider.of<PersonViewModel>(context, listen: false);
-    // Inicializa la lista de personas
-    _personViewModel.getPersonas();
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: _darktheme ? Colores.coloarPrimarioDark : Colores.coloarPrimario,
@@ -38,42 +33,61 @@ class Page extends StatefulWidget {
   _Page createState() => _Page();
 }
 
-class _Page extends State<Page>{
+class _Page extends State<Page> {
+  late List<ListaDatos> _personas;
+
+  @override
+  void initState() {
+    super.initState();
+    _personas = [];
+  }
+
   @override
   Widget build(BuildContext context) {
     bool _darktheme = AdaptiveTheme.of(context).mode == AdaptiveThemeMode.dark;
+    final _personViewModel = Provider.of<PersonViewModel>(context); // Obtener instancia de PersonViewModel
+
+    // Llamar a getPersonas para asegurarse de que la lista esté actualizada
+    _personViewModel.getPersonas();
+
     return Center(
       child: Container(
         child: Consumer<PersonViewModel>(
-          builder: (context, viewModel,child) {
-            return ListView.builder(
-              itemCount: viewModel.personas.length,
-              itemBuilder: (context, index) {
-                final person = viewModel.personas;
-                if (viewModel.state == PersonState.loading) {
-                  return CircularProgressIndicator();
-                } else if (viewModel.state == PersonState.error) {
-                  return Text('Error: ${viewModel.error}');
-                }else{
-                  return MyCard(
-                    index: index,
-                    id: person[index].Id,
-                    nombre: person[index].Nombre,
-                    apellido: person[index].Apellido,
-                    telefono: person[index].Telefono,
-                    fecha: person[index].FechaN,
-                  );
-                }
-              },);
+          builder: (context, viewModel, child) {
+            if (viewModel.state == PersonState.loading) {
+              return CircularProgressIndicator();
+            } else if (viewModel.state == PersonState.error) {
+              return Text('Error: ${viewModel.error}');
+            } else {
+              _personas = viewModel.personas; // Actualizar la lista de personas
+              return Container(
+                color: _darktheme ? Colores.negrototal : Colores.fondomodoblanco,
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                child: ListView.builder(
+                  itemCount: _personas.length,
+                  itemBuilder: (context, index) {
+                    final person = _personas[index];
+                    return MyCard(
+                      key: ValueKey(person.Id), // Utilizar el ID como clave
+                      index: index,
+                      id: person.Id,
+                      nombre: person.Nombre,
+                      apellido: person.Apellido,
+                      telefono: person.Telefono,
+                      fecha: person.FechaN,
+                    );
+                  },
+                ),
+              );
+            }
           },
         ),
       ),
     );
   }
 }
-
-
 class MyCard extends StatefulWidget {
+  final Key key;
   final int index;
   final int id;
   final String nombre;
@@ -82,7 +96,7 @@ class MyCard extends StatefulWidget {
   final String fecha;
 
   const MyCard({
-    Key? key,
+    required this.key,
     required this.index,
     required this.id,
     required this.nombre,
@@ -90,6 +104,7 @@ class MyCard extends StatefulWidget {
     required this.telefono,
     required this.fecha,
   }) : super(key: key);
+
   @override
   _MyCard createState() => _MyCard();
 }
@@ -135,9 +150,8 @@ class _MyCard extends State<MyCard>{
               color: _darktheme ? Colores.colorcard_dark : Colores.colorcard,
               child: InkWell(
                 onTap: () {
-                  setState(() {
-                    Provider.of<PersonViewModel>(context, listen: false).deletePersona(index,id);
-                  });
+                  final _personViewModel = Provider.of<PersonViewModel>(context, listen: false);
+                  _personViewModel.deletePersona(id);
                 },
                 child: Padding(
                   padding: EdgeInsets.all(16.0),
@@ -150,6 +164,11 @@ class _MyCard extends State<MyCard>{
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Text(
+                            'Id: $id',
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                          SizedBox(height: 8.0),
                           Text(
                             'Nombre: $nombre',
                             style: TextStyle(fontSize: 16.0),
