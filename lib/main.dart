@@ -1,4 +1,5 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,13 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
 
-  if (Platform.isLinux) {
+  if (kIsWeb) {
+    // Some web specific code there
+  }
+  else if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android) {
+    // Some android/ios specific code
+  }
+  else if (defaultTargetPlatform == TargetPlatform.linux || defaultTargetPlatform == TargetPlatform.macOS || defaultTargetPlatform == TargetPlatform.windows || defaultTargetPlatform == TargetPlatform.fuchsia) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
