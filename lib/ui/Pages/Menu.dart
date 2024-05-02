@@ -86,12 +86,15 @@ class _BL_Persona extends State<BL_Persona> {
     return ElevatedButton(
       onPressed: () async {
         // Llama al método fetchPersonas para obtener la lista de personas
+        /*
         await _personViewModel.getPersonas();
         // Imprime la lista de personas
         List<ListaDatos> person=_personViewModel.personas;
         for (var persona in person) {
           print('Nombre: ${persona.Nombre}, Apellido: ${persona.Apellido}');
         }
+         */
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ListaPersonas()));
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: _darktheme

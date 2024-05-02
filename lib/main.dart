@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
         dark: ThemeData(
           useMaterial3: true,
           brightness: Brightness.dark,
-          scaffoldBackgroundColor: Color(0xFF000000),
+          scaffoldBackgroundColor: Colores.negrototal,
           colorSchemeSeed: Colores.blueThemeDark,
         ),
         initial: AdaptiveThemeMode.light,
