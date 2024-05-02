@@ -5,8 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:votacion/domain/DatosCapsulados/listaApp.dart';
 import 'package:votacion/infraestruture/ViewModel/ListaPersonaViewModel.dart';
 import 'package:votacion/ui/Componentes/Colores.dart' as Colores;
-
-
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 class ListaPersonas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -34,13 +33,11 @@ class Page extends StatefulWidget {
 }
 class _Page extends State<Page> {
   late List<ListaDatos> _personas;
-  late ScrollController _scrollController; // Agregar controlador de desplazamiento
 
   @override
   void initState() {
     super.initState();
     _personas = [];
-    _scrollController = ScrollController(); // Inicializar el controlador
   }
 
   Future<void> _refreshData() async {
@@ -51,9 +48,8 @@ class _Page extends State<Page> {
   @override
   Widget build(BuildContext context) {
     bool _darktheme = AdaptiveTheme.of(context).mode == AdaptiveThemeMode.dark;
-    final _personViewModel = Provider.of<PersonViewModel>(context); // Obtener instancia de PersonViewModel
+    final _personViewModel = Provider.of<PersonViewModel>(context);
 
-    // Llamar a getPersonas para asegurarse de que la lista esté actualizada
     _personViewModel.getPersonas();
 
     return Center(
@@ -65,19 +61,21 @@ class _Page extends State<Page> {
             } else if (viewModel.state == PersonState.error) {
               return Text('Error: ${viewModel.error}');
             } else {
-              _personas = viewModel.personas; // Actualizar la lista de personas
-              return RefreshIndicator(
+              _personas = viewModel.personas;
+              return LiquidPullToRefresh(
+                color: _darktheme ? Colores.coloarPrimarioDark : Colores.coloarPrimario,
+                backgroundColor: _darktheme ? Colors.white : Colors.white,
                 onRefresh: _refreshData,
                 child: Container(
                   color: _darktheme ? Colores.negrototal : Colores.fondomodoblanco,
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
                   child: ListView.builder(
-                    controller: _scrollController, // Asignar el controlador
+                    physics: AlwaysScrollableScrollPhysics(),
                     itemCount: _personas.length,
                     itemBuilder: (context, index) {
                       final person = _personas[index];
                       return MyCard(
-                        key: ValueKey(person.Id), // Utilizar el ID como clave
+                        key: ValueKey(person.Id),
                         index: index,
                         id: person.Id,
                         nombre: person.Nombre,
