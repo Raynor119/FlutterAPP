@@ -86,7 +86,7 @@ class _BL_Persona extends State<BL_Persona> {
     return ElevatedButton(
       onPressed: () async {
         // Llama al método fetchPersonas para obtener la lista de personas
-        await _personViewModel.fetchPersonas();
+        await _personViewModel.getPersonas();
         // Imprime la lista de personas
         List<ListaDatos> person=_personViewModel.personas;
         for (var persona in person) {

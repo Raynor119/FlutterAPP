@@ -1,10 +1,13 @@
 class ListaDatos{
+  late int _Id;
   late String _Nombre;
   late String _Apellido;
   late String _Telefono;
   late String _FechaN;
 
-  ListaDatos(this._Nombre, this._Apellido, this._Telefono, this._FechaN);
+
+  ListaDatos(
+      this._Id, this._Nombre, this._Apellido, this._Telefono, this._FechaN);
 
   String get FechaN => _FechaN;
 
@@ -28,5 +31,11 @@ class ListaDatos{
 
   set Nombre(String value) {
     _Nombre = value;
+  }
+
+  int get Id => _Id;
+
+  set Id(int value) {
+    _Id = value;
   }
 }

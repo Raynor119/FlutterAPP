@@ -15,7 +15,7 @@ class PersonViewModel extends ChangeNotifier {
   }
 
   // Método para obtener la lista de personas
-  Future<void> fetchPersonas() async {
+  Future<void> getPersonas() async {
     DatabaseSQLt _databaseSQLt = DatabaseSQLt();
     _personas = await _databaseSQLt.getPersonas();
     notifyListeners();
