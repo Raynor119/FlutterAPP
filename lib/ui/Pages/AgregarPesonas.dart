@@ -142,16 +142,16 @@ class _AG_Persona extends State<AG_Persona> {
           FechaN.setError(true, "Digite la fecha de nacimiento");
         }
         if((!nombret.getError()) && (!apellidot.getError()) && (!telefonot.getError()) && (!FechaN.getError())){
-          personViewModel.addpersona(
+          personViewModel.addPersona(
             nombret.getText(),
             apellidot.getText(),
             telefonot.getText(),
             formatearFecha(FechaN.getText()),
           );
-          //nombret.setText("");
-          //apellidot.setText("");
-          //telefonot.setText("");
-          //FechaN.setText("dd/MM/YYYY");
+          nombret.setText("");
+          apellidot.setText("");
+          telefonot.setText("");
+          FechaN.setText("dd/MM/YYYY");
           print("-----------------------------------------Guardado-----------------------------------");
         }
       },

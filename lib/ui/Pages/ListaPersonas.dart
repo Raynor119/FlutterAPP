@@ -11,10 +11,8 @@ class ListaPersonas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool _darktheme = AdaptiveTheme.of(context).mode == AdaptiveThemeMode.dark;
-
     // Obtén una instancia de PersonViewModel desde el Provider
     final PersonViewModel _personViewModel = Provider.of<PersonViewModel>(context, listen: false);
-
     // Inicializa la lista de personas
     _personViewModel.getPersonas();
 
@@ -52,14 +50,20 @@ class _Page extends State<Page>{
               itemCount: viewModel.personas.length,
               itemBuilder: (context, index) {
                 final person = viewModel.personas;
-                return MyCard(
-                  index: index,
-                  id: person[index].Id,
-                  nombre: person[index].Nombre,
-                  apellido: person[index].Apellido,
-                  telefono: person[index].Telefono,
-                  fecha: person[index].FechaN,
-                );
+                if (viewModel.state == PersonState.loading) {
+                  return CircularProgressIndicator();
+                } else if (viewModel.state == PersonState.error) {
+                  return Text('Error: ${viewModel.error}');
+                }else{
+                  return MyCard(
+                    index: index,
+                    id: person[index].Id,
+                    nombre: person[index].Nombre,
+                    apellido: person[index].Apellido,
+                    telefono: person[index].Telefono,
+                    fecha: person[index].FechaN,
+                  );
+                }
               },);
           },
         ),
@@ -131,12 +135,9 @@ class _MyCard extends State<MyCard>{
               color: _darktheme ? Colores.colorcard_dark : Colores.colorcard,
               child: InkWell(
                 onTap: () {
-                  // Elimina el elemento al tocar el card
-                  // Maneja el evento de toque
                   setState(() {
                     Provider.of<PersonViewModel>(context, listen: false).deletePersona(index,id);
                   });
-                  print("hola");
                 },
                 child: Padding(
                   padding: EdgeInsets.all(16.0),

@@ -4,30 +4,53 @@ import 'package:votacion/domain/DatosCapsulados/listaApp.dart';
 
 class PersonViewModel extends ChangeNotifier {
   List<ListaDatos> _personas = [];
-
-  // Getter para acceder a la lista de personas
   List<ListaDatos> get personas => _personas;
 
-  void addpersona(String nombre,String apellido,String telefono,String fecha) async {
-    DatabaseSQLt _databaseSQLt = DatabaseSQLt();
-    await _databaseSQLt.insertPersonas(nombre, apellido, telefono, fecha);
+  PersonState _state = PersonState.loading;
+  String? _error;
+
+  PersonState get state => _state;
+  String? get error => _error;
+
+  // Método privado para actualizar el estado y notificar a los escuchadores
+  void _updateState(PersonState newState, [String? newError]) {
+    _state = newState;
+    _error = newError;
     notifyListeners();
   }
 
-  // Método para obtener la lista de personas
+  void addPersona(String nombre, String apellido, String telefono, String fecha) async {
+    try {
+      DatabaseSQLt _databaseSQLt = DatabaseSQLt();
+      await _databaseSQLt.insertPersonas(nombre, apellido, telefono, fecha);
+      await getPersonas(); // Actualiza la lista después de agregar una persona
+    } catch (e) {
+      _updateState(PersonState.error, e.toString());
+    }
+  }
+
   Future<void> getPersonas() async {
-    DatabaseSQLt _databaseSQLt = DatabaseSQLt();
-    _personas = await _databaseSQLt.getPersonas();
-    notifyListeners();
+    try {
+      DatabaseSQLt _databaseSQLt = DatabaseSQLt();
+      _personas = await _databaseSQLt.getPersonas();
+      _updateState(PersonState.loaded);
+    } catch (e) {
+      _updateState(PersonState.error, e.toString());
+    }
   }
 
-
-  void deletePersona(int index,int id) {
-    DatabaseSQLt _databaseSQLt = DatabaseSQLt();
-    _databaseSQLt.deletePersona(id);
-    getPersonas();
-    notifyListeners(); // Notificar a los escuchadores sobre el cambio
+  void deletePersona(int index, int id) {
+    try {
+      DatabaseSQLt _databaseSQLt = DatabaseSQLt();
+      _databaseSQLt.deletePersona(id);
+      getPersonas(); // Actualiza la lista después de eliminar una persona
+    } catch (e) {
+      _updateState(PersonState.error, e.toString());
+    }
   }
-
-
+}
+enum PersonState {
+  loading,
+  loaded,
+  error,
 }
