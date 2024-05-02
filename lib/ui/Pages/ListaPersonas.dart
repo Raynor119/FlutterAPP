@@ -32,7 +32,6 @@ class Page extends StatefulWidget {
   @override
   _Page createState() => _Page();
 }
-
 class _Page extends State<Page> {
   late List<ListaDatos> _personas;
   late ScrollController _scrollController; // Agregar controlador de desplazamiento
@@ -42,6 +41,11 @@ class _Page extends State<Page> {
     super.initState();
     _personas = [];
     _scrollController = ScrollController(); // Inicializar el controlador
+  }
+
+  Future<void> _refreshData() async {
+    final _personViewModel = Provider.of<PersonViewModel>(context, listen: false);
+    await _personViewModel.getPersonas();
   }
 
   @override
@@ -62,24 +66,27 @@ class _Page extends State<Page> {
               return Text('Error: ${viewModel.error}');
             } else {
               _personas = viewModel.personas; // Actualizar la lista de personas
-              return Container(
-                color: _darktheme ? Colores.negrototal : Colores.fondomodoblanco,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-                child: ListView.builder(
-                  controller: _scrollController, // Asignar el controlador
-                  itemCount: _personas.length,
-                  itemBuilder: (context, index) {
-                    final person = _personas[index];
-                    return MyCard(
-                      key: ValueKey(person.Id), // Utilizar el ID como clave
-                      index: index,
-                      id: person.Id,
-                      nombre: person.Nombre,
-                      apellido: person.Apellido,
-                      telefono: person.Telefono,
-                      fecha: person.FechaN,
-                    );
-                  },
+              return RefreshIndicator(
+                onRefresh: _refreshData,
+                child: Container(
+                  color: _darktheme ? Colores.negrototal : Colores.fondomodoblanco,
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                  child: ListView.builder(
+                    controller: _scrollController, // Asignar el controlador
+                    itemCount: _personas.length,
+                    itemBuilder: (context, index) {
+                      final person = _personas[index];
+                      return MyCard(
+                        key: ValueKey(person.Id), // Utilizar el ID como clave
+                        index: index,
+                        id: person.Id,
+                        nombre: person.Nombre,
+                        apellido: person.Apellido,
+                        telefono: person.Telefono,
+                        fecha: person.FechaN,
+                      );
+                    },
+                  ),
                 ),
               );
             }
@@ -89,6 +96,7 @@ class _Page extends State<Page> {
     );
   }
 }
+
 
 class MyCard extends StatefulWidget {
   final Key key;
