@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -62,28 +64,37 @@ class _Page extends State<Page> {
               return Text('Error: ${viewModel.error}');
             } else {
               _personas = viewModel.personas;
-              return LiquidPullToRefresh(
-                color: _darktheme ? Colores.coloarPrimarioDark : Colores.coloarPrimario,
-                backgroundColor: _darktheme ? Colors.white : Colors.white,
+              //RefreshIndicator LiquidPullToRefresh
+              return RefreshIndicator(
+                //color: _darktheme ? Colores.coloarPrimarioDark : Colores.coloarPrimario,
+                //backgroundColor: _darktheme ? Colors.white : Colors.white,
                 onRefresh: _refreshData,
                 child: Container(
                   color: _darktheme ? Colores.negrototal : Colores.fondomodoblanco,
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-                  child: ListView.builder(
-                    physics: AlwaysScrollableScrollPhysics(),
-                    itemCount: _personas.length,
-                    itemBuilder: (context, index) {
-                      final person = _personas[index];
-                      return MyCard(
-                        key: ValueKey(person.Id),
-                        index: index,
-                        id: person.Id,
-                        nombre: person.Nombre,
-                        apellido: person.Apellido,
-                        telefono: person.Telefono,
-                        fecha: person.FechaN,
-                      );
-                    },
+                  child: ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context).copyWith(
+                      dragDevices: {
+                        PointerDeviceKind.touch,
+                        PointerDeviceKind.mouse,
+                      },
+                    ),
+                    child: ListView.builder(
+                      physics: AlwaysScrollableScrollPhysics(),
+                      itemCount: _personas.length,
+                      itemBuilder: (context, index) {
+                        final person = _personas[index];
+                        return MyCard(
+                          key: ValueKey(person.Id),
+                          index: index,
+                          id: person.Id,
+                          nombre: person.Nombre,
+                          apellido: person.Apellido,
+                          telefono: person.Telefono,
+                          fecha: person.FechaN,
+                        );
+                      },
+                    ),
                   ),
                 ),
               );
