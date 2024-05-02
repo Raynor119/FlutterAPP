@@ -66,8 +66,9 @@ class _Page extends State<Page> {
               _personas = viewModel.personas;
               //RefreshIndicator LiquidPullToRefresh
               return RefreshIndicator(
-                //color: _darktheme ? Colores.coloarPrimarioDark : Colores.coloarPrimario,
+                color: _darktheme ? Colores.coloarPrimarioDark : Colores.coloarPrimario,
                 //backgroundColor: _darktheme ? Colors.white : Colors.white,
+                backgroundColor: _darktheme ? Colores.negrototal : Colors.white,
                 onRefresh: _refreshData,
                 child: Container(
                   color: _darktheme ? Colores.negrototal : Colores.fondomodoblanco,
